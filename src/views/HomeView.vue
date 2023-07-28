@@ -3,6 +3,8 @@
     <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
+  <a href="" class="btn btn-primary">link</a>
+  <a href="" class="btn btn-info">link</a>
 </template>
 
 <script>
