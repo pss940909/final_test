@@ -30,7 +30,14 @@
                   >或 上傳圖片
                   <i class="fas fa-spinner fa-spin"></i>
                 </label>
-                <input type="file" id="customFile" class="form-control" />
+                <input
+                  type="file"
+                  id="customFile"
+                  class="form-control"
+                  ref="fileInput"
+                  name="file-to-upload"
+                  @change="uploadFile"
+                />
               </div>
               <img class="img-fluid" alt="" />
               <!-- 延伸技巧，多圖 -->
@@ -168,7 +175,7 @@
 </template>
 
 <script>
-import { Modal } from "bootstrap";
+import modalMixin from "@/mixins/modalMixin";
 export default {
   data() {
     return {
@@ -184,6 +191,7 @@ export default {
       },
     },
   },
+  mixins: [modalMixin],
   watch: {
     product() {
       this.tempProduct = this.product;
@@ -191,19 +199,21 @@ export default {
   },
   // 加入Bootstrap modal 方法
   methods: {
-    showModal() {
-      this.modal.show();
-    },
-    hideModal() {
-      this.modal.hide();
-    },
     confirmEdit() {
       this.$emit("editProduct", this.tempProduct);
     },
-  },
-  // 要等modal完全載入才可以進行實體化
-  mounted() {
-    this.modal = new Modal(this.$refs.modal);
+    uploadFile() {
+      const uploadedFile = this.$refs.fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file-to-upload", uploadedFile);
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/upload`;
+      this.axios.post(url, formData).then((res) => {
+        console.log(res.data.imageUrl);
+        if (res.data.success) {
+          this.tempProduct.imageUrl = res.data.imageUrl;
+        }
+      });
+    },
   },
 };
 </script>
