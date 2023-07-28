@@ -35,7 +35,7 @@
             </button>
             <button
               class="btn btn-outline-danger btn-sm"
-              @click="openDeleteModal"
+              @click="openDeleteModal(product)"
             >
               刪除
             </button>
@@ -49,11 +49,15 @@
     :product="tempProduct"
     @editProduct="editProduct"
   ></product-modal>
-  <delete-modal ref="deleteModal"></delete-modal>
+  <delete-modal
+    ref="deleteModal"
+    :product="tempProduct"
+    @deleteProduct="deleteProduct"
+  ></delete-modal>
 </template>
 
 <script>
-import DeleteModal from "@/components/DeleteModal.vue";
+import DeleteModal from "../components/DeleteModal.vue";
 import ProductModal from "../components/ProductModal.vue";
 
 export default {
@@ -89,7 +93,8 @@ export default {
       this.isNew = isNew;
       this.$refs.productModal.showModal();
     },
-    openDeleteModal() {
+    openDeleteModal(product) {
+      this.tempProduct = product;
       this.$refs.deleteModal.showModal();
     },
     editProduct(product) {
@@ -113,6 +118,16 @@ export default {
           }
         });
       }
+    },
+    deleteProduct(product) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${product.id}`;
+      this.axios.delete(url).then((res) => {
+        console.log(res.data);
+        if (res.data.success) {
+          this.$refs.deleteModal.hideModal();
+          this.getProducts();
+        }
+      });
     },
   },
   created() {
