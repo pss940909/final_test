@@ -60,6 +60,7 @@
                   class="form-control"
                   id="title"
                   placeholder="請輸入標題"
+                  v-model="tempProduct.title"
                 />
               </div>
 
@@ -71,6 +72,7 @@
                     class="form-control"
                     id="category"
                     placeholder="請輸入分類"
+                    v-model="tempProduct.category"
                   />
                 </div>
                 <div class="mb-3 col-md-6">
@@ -80,6 +82,7 @@
                     class="form-control"
                     id="unit"
                     placeholder="請輸入單位"
+                    v-model="tempProduct.unit"
                   />
                 </div>
               </div>
@@ -92,6 +95,7 @@
                     class="form-control"
                     id="origin_price"
                     placeholder="請輸入原價"
+                    v-model="tempProduct.origin_price"
                   />
                 </div>
                 <div class="mb-3 col-md-6">
@@ -101,6 +105,7 @@
                     class="form-control"
                     id="price"
                     placeholder="請輸入售價"
+                    v-model="tempProduct.price"
                   />
                 </div>
               </div>
@@ -113,6 +118,7 @@
                   class="form-control"
                   id="description"
                   placeholder="請輸入產品描述"
+                  v-model="tempProduct.description"
                 ></textarea>
               </div>
               <div class="mb-3">
@@ -122,6 +128,7 @@
                   class="form-control"
                   id="content"
                   placeholder="請輸入產品說明內容"
+                  v-model="tempProduct.content"
                 ></textarea>
               </div>
               <div class="mb-3">
@@ -132,6 +139,7 @@
                     :true-value="1"
                     :false-value="0"
                     id="is_enabled"
+                    v-model="tempProduct.is_enabled"
                   />
                   <label class="form-check-label" for="is_enabled">
                     是否啟用
@@ -146,10 +154,13 @@
             type="button"
             class="btn btn-outline-secondary"
             data-bs-dismiss="modal"
+            @click="hideModal"
           >
             取消
           </button>
-          <button type="button" class="btn btn-primary">確認</button>
+          <button type="button" class="btn btn-primary" @click="confirmEdit">
+            確認
+          </button>
         </div>
       </div>
     </div>
@@ -162,8 +173,21 @@ export default {
   data() {
     return {
       modal: {},
-      test: 1,
+      tempProduct: {},
     };
+  },
+  props: {
+    product: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+  },
+  watch: {
+    product() {
+      this.tempProduct = this.product;
+    },
   },
   // 加入Bootstrap modal 方法
   methods: {
@@ -172,6 +196,9 @@ export default {
     },
     hideModal() {
       this.modal.hide();
+    },
+    confirmEdit() {
+      this.$emit("editProduct", this.tempProduct);
     },
   },
   // 要等modal完全載入才可以進行實體化

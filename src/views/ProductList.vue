@@ -1,6 +1,6 @@
 <template>
   <div class="text-end">
-    <button class="btn btn-primary" @click="showModal" type="button">
+    <button class="btn btn-primary" @click="openModal(true)" type="button">
       建立新產品
     </button>
   </div>
@@ -27,14 +27,23 @@
         </td>
         <td>
           <div class="btn-group">
-            <button class="btn btn-outline-primary btn-sm">編輯</button>
+            <button
+              class="btn btn-outline-primary btn-sm"
+              @click="openModal(false, product)"
+            >
+              編輯
+            </button>
             <button class="btn btn-outline-danger btn-sm">刪除</button>
           </div>
         </td>
       </tr>
     </tbody>
   </table>
-  <product-modal ref="productModal"></product-modal>
+  <product-modal
+    ref="productModal"
+    :product="tempProduct"
+    @editProduct="editProduct"
+  ></product-modal>
 </template>
 
 <script>
@@ -47,6 +56,8 @@ export default {
     return {
       products: [],
       pagination: {},
+      tempProduct: {},
+      isNew: false,
     };
   },
   methods: {
@@ -58,8 +69,38 @@ export default {
         this.pagination = res.data.pagination;
       });
     },
-    showModal() {
+    openModal(isNew, product) {
+      // 編輯產品 => 傳遞產品資訊
+      if (isNew) {
+        this.tempProduct = {};
+      } // 新增產品
+      else {
+        this.tempProduct = { ...product };
+      }
+      this.isNew = isNew;
       this.$refs.productModal.showModal();
+    },
+    editProduct(product) {
+      this.tempProduct = product;
+      // 新增產品
+      if (this.isNew) {
+        const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`;
+        this.axios.post(url, { data: this.tempProduct }).then((res) => {
+          if (res.data.success) {
+            this.$refs.productModal.hideModal();
+            this.getProducts();
+          }
+        });
+      } // 修改產品
+      else {
+        const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+        this.axios.put(url, { data: this.tempProduct }).then((res) => {
+          if (res.data.success) {
+            this.$refs.productModal.hideModal();
+            this.getProducts();
+          }
+        });
+      }
     },
   },
   created() {
