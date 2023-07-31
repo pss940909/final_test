@@ -43,6 +43,7 @@ export default {
   },
   methods: {
     updatePage(page) {
+      console.log("updatepage");
       this.$emit("emitPages", page);
     },
   },

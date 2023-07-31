@@ -35,7 +35,7 @@ const routes = [
       },
       // 單一產品頁面
       {
-        path: "product/:productId",
+        path: "products/:productId",
         component: () => import("../views/UserProduct.vue"),
       },
     ],

@@ -13,6 +13,8 @@ import VueAxios from "vue-axios";
 import Loading from "vue3-loading-overlay";
 // Import stylesheet
 import "vue3-loading-overlay/dist/vue3-loading-overlay.css";
+// bootstrap icons
+import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 const app = createApp(App);
 
 // 全域屬性
