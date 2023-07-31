@@ -23,6 +23,7 @@
                   class="form-control"
                   id="image"
                   placeholder="請輸入圖片連結"
+                  :value="tempProduct.imageUrl"
                 />
               </div>
               <div class="mb-3">
@@ -195,6 +196,7 @@ export default {
   watch: {
     product() {
       this.tempProduct = this.product;
+      console.log(this.tempProduct.imageUrl);
     },
   },
   // 加入Bootstrap modal 方法
@@ -203,6 +205,7 @@ export default {
       this.$emit("editProduct", this.tempProduct);
     },
     uploadFile() {
+      console.dir(this.$refs.fileInput.files[0].name);
       const uploadedFile = this.$refs.fileInput.files[0];
       const formData = new FormData();
       formData.append("file-to-upload", uploadedFile);

@@ -1,5 +1,4 @@
 <template>
-  <h2>Dashboard</h2>
   <nav-bar></nav-bar>
   <div class="container-fluid">
     <router-view />
@@ -8,7 +7,7 @@
 
 <script>
 import swal from "sweetalert";
-import NavBar from "../components/NavBar.vue";
+import NavBar from "../components/DashNav.vue";
 export default {
   components: {
     NavBar,

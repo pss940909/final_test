@@ -3,6 +3,10 @@ import { Modal } from "bootstrap";
 export default {
   methods: {
     showModal() {
+      // 把input type=file的內容清空
+      if (this.$refs.fileInput) {
+        this.$refs.fileInput.value = "";
+      }
       this.modal.show();
     },
     hideModal() {

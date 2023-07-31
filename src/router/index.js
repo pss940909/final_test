@@ -8,15 +8,6 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  },
-  {
     path: "/login",
     name: "login",
     component: () => import("../views/LoginPage.vue"),
@@ -29,6 +20,23 @@ const routes = [
       {
         path: "products",
         component: () => import("../views/ProductList.vue"),
+      },
+    ],
+  },
+  {
+    path: "/user",
+    name: "user",
+    component: () => import("../views/UserBoard.vue"),
+    children: [
+      // 產品列表 & 購物車
+      {
+        path: "cart",
+        component: () => import("../views/UserCart.vue"),
+      },
+      // 單一產品頁面
+      {
+        path: "product/:productId",
+        component: () => import("../views/UserProduct.vue"),
       },
     ],
   },

@@ -11,7 +11,7 @@
       <div class="modal-content">
         <div class="modal-header bg-danger">
           <h5 class="modal-title text-white" id="exampleModalLabel">
-            刪除品項
+            刪除{{ tempProduct.title }}
           </h5>
           <button
             type="button"
@@ -23,7 +23,7 @@
         <div class="modal-body">
           確定要刪除
           <strong class="text-danger">{{ tempProduct.title }}</strong>
-          嗎?
+          嗎? (刪除後無法恢復)
         </div>
         <div class="modal-footer">
           <button
