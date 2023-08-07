@@ -8,9 +8,16 @@
 <script>
 import swal from "sweetalert";
 import NavBar from "../components/DashNav.vue";
+import emitter from "@/methods/emitter";
+
 export default {
   components: {
     NavBar,
+  },
+  provide() {
+    return {
+      emitter,
+    };
   },
   created() {
     // 從cookie中取出登入時存入的token

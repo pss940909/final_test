@@ -80,6 +80,7 @@ export default {
       isLoading: false,
     };
   },
+  inject: ["emitter"],
   methods: {
     getProducts(page = 1) {
       // 加入loading效果

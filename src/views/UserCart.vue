@@ -41,7 +41,11 @@
                   >
                     更多
                   </button>
-                  <button type="button" class="btn btn-outline-primary">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    :disabled="status.loadingItem === product.id"
+                  >
                     <div
                       class="spinner-border spinner-border-sm text-primary me-2"
                       role="status"
@@ -59,7 +63,61 @@
           </tbody>
         </table>
       </div>
-      <div class="col-md-5"></div>
+      <div class="col-md-5">
+        <table class="table table-sm table-hover" v-if="cartList.length">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">品名</th>
+              <th scope="col">數量</th>
+              <th scope="col">單價</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="cart in cartList" :key="cart.id" class="align-middle">
+              <th scope="row">
+                <button
+                  class="btn btn-outline-danger"
+                  @click="deleteCartItem(cart.id)"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </th>
+              <td>
+                {{ cart.product.title }}
+              </td>
+              <td>
+                <div class="input-group input-group-sm">
+                  <input
+                    type="number"
+                    class="form-control"
+                    v-model.number="cart.qty"
+                    min="1"
+                    max="99"
+                    @change="updateCart(cart)"
+                    :disabled="this.status.loadingItem == cart.id"
+                  />
+                  <span class="input-group-text" id="basic-addon2">{{
+                    cart.product.unit
+                  }}</span>
+                </div>
+              </td>
+              <td>{{ cart.final_total }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <th scope="row" class="text-center">總價</th>
+            <td colspan="3" class="text-end">
+              <small class="text-decoration-line-through">{{ total }}</small>
+              <p class="fw-bold">{{ final_total }}</p>
+            </td>
+          </tfoot>
+        </table>
+        <div v-else>
+          <i class="bi bi-basket3 me-2"></i>
+          <span>購物車內無品項</span>
+        </div>
+      </div>
     </div>
     <vue-pagination
       :pages="pagination"
@@ -78,6 +136,9 @@ export default {
     return {
       isLoading: false,
       productList: {},
+      cartList: {},
+      total: 0,
+      fianl_total: 0,
       pagination: {},
       status: {
         loadingItem: "",
@@ -114,11 +175,47 @@ export default {
       this.axios.post(url, { data: product }).then((res) => {
         console.log(res.data);
         this.status.loadingItem = "";
+        this.getCartList();
+      });
+    },
+    getCartList() {
+      this.isLoading = true;
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`;
+      this.axios.get(url).then((res) => {
+        console.log(res.data);
+        if (res.data.success) {
+          this.cartList = res.data.data.carts;
+          this.total = res.data.data.total;
+          this.final_total = res.data.data.final_total;
+          this.isLoading = false;
+        }
+      });
+    },
+    deleteCartItem(cartID) {
+      this.isLoading = true;
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cartID}`;
+      this.axios.delete(url).then((res) => {
+        console.log(res);
+        this.isLoading = false;
+        this.getCartList();
+      });
+    },
+    updateCart(cart) {
+      this.status.loadingItem = cart.id;
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${cart.id}`;
+      const cartInfo = { product_id: cart.product_id, qty: cart.qty };
+      this.axios.put(url, { data: cartInfo }).then((res) => {
+        if (res.data.success) {
+          console.log(res.data);
+          this.status.loadingItem = "";
+          this.getCartList();
+        }
       });
     },
   },
   created() {
     this.getProducts();
+    this.getCartList();
   },
 };
 </script>
